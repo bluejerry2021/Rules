@@ -338,4 +338,7 @@ loli.net
 v2ex.co
 imgs.ovh
 full:github-cloud.s3.amazonaws.com
+fragment.com
 blob.core.windows.net
+isbgpsafeyet.com
+cdn-telegram.org
