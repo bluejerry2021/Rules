@@ -337,4 +337,5 @@ full:stats.g.doubleclick.net
 loli.net
 v2ex.co
 imgs.ovh
-
+full:github-cloud.s3.amazonaws.com
+blob.core.windows.net
