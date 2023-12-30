@@ -1,0 +1,102 @@
+name: Build rules 
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 05 1,16 * *"
+  push:
+    branches:
+      - main
+    paths-ignore:
+      - "**/README.md"
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: set variables
+        run: |
+          echo "RELEASE_NAME=$(date +%Y%m%d%H%M%S)" >> $GITHUB_ENV
+          echo "TAG_NAME=$(date +%Y%m%d%H%M%S)" >> $GITHUB_ENV
+        shell: bash
+     
+      - name: Checkout the "booster" branch
+        uses: actions/checkout@v4
+        with:
+          ref: booster
+          path: temporary
+          
+      - name: Checkout v2fly/domain-list-community
+        uses: actions/checkout@v4
+        with:
+          repository: v2fly/domain-list-community
+          path: domain
+          
+      - name: Checkout cokebar/gfwlist2dnsmasq
+        uses: actions/checkout@v4
+        with:
+          repository: cokebar/gfwlist2dnsmasq
+          path: gfwlist2dnsmasq
+     
+      - name: Setup Go
+        uses: actions/setup-go@v5
+        with:
+          go-version-file: ./domain/go.mod
+          cache-dependency-path: ./domain/go.sum
+    
+      - name: Rename tg.txt to telegramcidr.list
+        run: |
+          cd temporary || exit 1
+          cat tg.txt > ../telegramcidr.list
+    
+      - name: Reserve `full`, `regexp` and `keyword` type of rules from plus lists to "reserve" files
+        run: |
+          cat ./temporary/proxy.txt | perl -ne '/^((full|regexp|keyword):[^:]+)(\n$|:@.+)/ && print "$1\n"' | sort --ignore-case -u > proxy-reserve.txt    
+      
+      - name: Generate gfwlist domains
+        run: |
+          cd gfwlist2dnsmasq || exit 1
+          chmod +x ./gfwlist2dnsmasq.sh
+          ./gfwlist2dnsmasq.sh -l -o ./gfwlist.txt
+
+      - name: Add gfw domains into pre-gfw.txt file and generate gfw.list file
+        run: |
+          cat ./gfwlist2dnsmasq/gfwlist.txt | perl -ne '/^((?=^.{3,255})[a-zA-Z0-9][-_a-zA-Z0-9]{0,62}(\.[a-zA-Z0-9][-_a-zA-Z0-9]{0,62})+)/ && print "$1\n"' > pre-gfw.txt
+          cat ./temporary/proxy.txt | grep -Ev "^(regexp|keyword|full):" | perl -ne '/^(domain:)?([-_a-zA-Z0-9]+(\.[-_a-zA-Z0-9]+)*)/ && print "$2\n"' >> pre-gfw.txt
+          cat ./temporary/proxy.txt | grep -Ev "^(regexp|keyword):" | perl -ne '/^(full:)([-_a-zA-Z0-9]+(\.[-_a-zA-Z0-9]+)*)/ && print "$2\n"' > pre-proxy.txt
+          cat pre-gfw.txt | perl -ne '/^(domain:)?([-_a-zA-Z0-9]+(\.[-_a-zA-Z0-9]+)*)/ && print ".$2\n"' > gfw.txt
+          cat pre-proxy.txt >> gfw.txt
+          cat gfw.txt | sort --ignore-case -u > gfw.list
+
+      - name: Create and write `gfw` lists to data directory
+        run: |
+          cat pre-gfw.txt | sort --ignore-case -u > ./domain/data/gfw
+      
+      - name: Add `full`, `regexp` and `keyword` type of rules back into "gfw" list
+        run: |
+          [ -f "proxy-reserve.txt" ] && cat proxy-reserve.txt >> ./domain/data/gfw
+          cat ./domain/data/gfw > gfw-list.txt
+      
+      - name: Build dlc.dat file and rename to geosite.dat
+        run: |
+          cd domain || exit 1
+          go run ./ --outputdir=../
+          mv ../dlc.dat ../geosite.dat
+          cd ../ && rm -rf domain
+          cd ../ && rm -rf gfwlist2dnsmasq
+          cd ../ && rm -rf temporary
+     
+      - name: Git push assets to "release" branch
+        run: |
+          git init
+          git config --local user.name "github-actions[bot]"
+          git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git checkout -b release
+          git add geosite.dat *.list *.txt
+          git commit -m "${{ env.RELEASE_NAME }}"
+          git remote add origin "https://${{ github.actor }}:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}"
+          git push -f -u origin release
+
+      - name: Release and upload assets
+        run: |
+          gh release create ${{ env.TAG_NAME }} --generate-notes --latest --title ${{ env.RELEASE_NAME }} ./geosite.dat ./gfw.list
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
