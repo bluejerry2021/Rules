@@ -4,7 +4,7 @@
 
 ## For personal use only!
 
-## THANKS
+## THANKS:
 
 - [@gfwlist/gfwlist](https://github.com/gfwlist/gfwlist)
 - [@cokebar/gfwlist2dnsmasq](https://github.com/cokebar/gfwlist2dnsmasq)
