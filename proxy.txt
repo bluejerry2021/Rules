@@ -151,7 +151,6 @@ byspotify.com
 cableav.xyz
 cabletvdirectv.com
 cdkworkshop.com
-cdn-telegram.org
 cf-ipfs.com
 chromebook.com
 cisco
@@ -217,9 +216,7 @@ cloudflaretest.com
 cloudflarewarp.com
 cloudfront.com
 cloudfront.net
-comments.app
 containersonaws.com
-contest.com
 dependabot.com
 digicert.com
 dirtytorrents.com
@@ -244,7 +241,6 @@ githubuniverse.com
 go-lang.com
 go-lang.net
 go-lang.org
-graph.org
 hcaptcha.com
 hcaptchastatus.com
 hysteria.network
@@ -278,7 +274,6 @@ pikpak.com
 pikpak.me
 pikpakdrive.com
 pscdn.co
-quiz.directory
 recaptcha.net
 repo.new
 sc-cdn.net
@@ -299,18 +294,11 @@ stripe.com
 stripe.network
 stripecdn.com
 stripe-terminal-local-reader.net
-tdesktop.com
-telega.one
-telegram.space
-telegram-cdn.org
-tg.dev
 thegithubshop.com
 thehiddenbay.com
 thinkboxsoftware.com
 torrentgalaxy.to
 trycloudflare.com
-tx.me
-usercontent.dev
 videodelivery.net
 warp.plus
 x1377x.eu
@@ -338,10 +326,8 @@ loli.net
 v2ex.co
 imgs.ovh
 full:github-cloud.s3.amazonaws.com
-fragment.com
 blob.core.windows.net
 isbgpsafeyet.com
-cdn-telegram.org
 1lib.cloud
 1lib.cz
 1lib.domains
@@ -383,7 +369,5 @@ z-lib.org
 zlib.life
 zlibcdn.com
 zlibcdn2.com
-legra.ph
-stel.com
 
 
