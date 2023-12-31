@@ -383,4 +383,7 @@ z-lib.org
 zlib.life
 zlibcdn.com
 zlibcdn2.com
+legra.ph
+stel.com
+
 
