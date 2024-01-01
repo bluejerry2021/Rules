@@ -369,5 +369,28 @@ z-lib.org
 zlib.life
 zlibcdn.com
 zlibcdn2.com
+cdn-telegram.org
+comments.app
+contest.com
+fragment.com
+graph.org
+legra.ph
+mbrx.app
+quiz.directory
+stel.com
+t.me
+tdesktop.com
+telega.one
+telegra.ph
+telegram.dog
+telegram.me
+telegram.org
+telegram.space
+telegram-cdn.org
+telegramdownload.com
+telesco.pe
+tg.dev
+tx.me
+usercontent.dev
 
 
