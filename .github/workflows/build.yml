@@ -49,7 +49,7 @@ jobs:
     
       - name: Get geoip.dat relative files
         run: |
-          wget https://github.com/v2fly/geoip/raw/release/geoip.dat
+          wget https://github.com/v2fly/geoip/releases/latest/download/geoip.dat
      
       - name: Reserve `full`, `regexp` and `keyword` type of rules from plus lists to "reserve" files
         run: |
