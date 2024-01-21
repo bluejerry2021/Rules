@@ -47,6 +47,10 @@ jobs:
           cd temporary || exit 1
           cat tg.txt > ../telegramcidr.list
     
+      - name: Get geoip.dat relative files
+        run: |
+          wget https://github.com/v2fly/geoip/raw/release/geoip.dat
+     
       - name: Reserve `full`, `regexp` and `keyword` type of rules from plus lists to "reserve" files
         run: |
           cat ./temporary/proxy.txt | perl -ne '/^((full|regexp|keyword):[^:]+)(\n$|:@.+)/ && print "$1\n"' | sort --ignore-case -u > proxy-reserve.txt    
@@ -91,13 +95,13 @@ jobs:
           git config --local user.name "github-actions[bot]"
           git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git checkout -b release
-          git add geosite.dat *.list *.txt
+          git add *.dat *.list *.txt
           git commit -m "${{ env.RELEASE_NAME }}"
           git remote add origin "https://${{ github.actor }}:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}"
           git push -f -u origin release
 
       - name: Release and upload assets
         run: |
-          gh release create ${{ env.TAG_NAME }} --generate-notes --latest --title ${{ env.RELEASE_NAME }} ./geosite.dat ./gfw.list
+          gh release create ${{ env.TAG_NAME }} --generate-notes --latest --title ${{ env.RELEASE_NAME }} ./*.dat ./gfw.list
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
